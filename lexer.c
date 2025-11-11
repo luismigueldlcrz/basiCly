@@ -1,4 +1,20 @@
 #include "lexer.h"
+#include <stdlib.h>
+#include <string.h>
+
+#ifndef HAVE_STRNDUP
+/* strndup is not available on some Windows toolchains (MSVCRT). Provide a compat impl. */
+static char *strndup_compat(const char *s, size_t n) {
+    size_t len = 0;
+    while (len < n && s[len]) len++;
+    char *p = (char *)malloc(len + 1);
+    if (!p) return NULL;
+    memcpy(p, s, len);
+    p[len] = '\0';
+    return p;
+}
+#define strndup(s, n) strndup_compat((s), (n))
+#endif
 
 void initLexer(Lexer *lexer, const char *source) {
     lexer->source = source;
@@ -100,8 +116,76 @@ Token getNextToken(Lexer *lexer) {
         return token;
     }
 
-    if(isAlpha(lexer->currentChar) || isDigit(lexer)) {
-        
+     if (isAlpha(lexer->currentChar)) { // Identifier or keyword
+        int startPos = lexer->position;
+        while (isAlpha(lexer->currentChar) || isDigit(lexer->currentChar)) {
+            advance(lexer);
+        }
+        int length = lexer->position - startPos;
+        token.lexeme = strndup(lexer->source + startPos, length);
+        token.type = isKeyword(token.lexeme) ? TOKEN_KEYWORD : TOKEN_IDENTIFIER;
+        return token;
     }
 
+    if (isDigit(lexer->currentChar)) { // Number
+        int startPos = lexer->position;
+        while (isDigit(lexer->currentChar)) {
+            advance(lexer);
+        }
+        int length = lexer->position - startPos;
+        token.lexeme = strndup(lexer->source + startPos, length);
+        token.type = TOKEN_NUMBER;
+        return token;
+    }
+
+    if (isOperator(lexer->currentChar)) { // Operator
+        char c = lexer->currentChar;
+        char next = lexer->source[lexer->position + 1];
+        int is_two = 0;
+        /* list of supported two-char operators */
+        const char *two_ops[] = {
+            "==","!=","<=",">=",
+            "&&","||","++","--",
+            "+=","-=","*=","/=","%="
+        };
+        if (next != '\0') {
+            char buf[3] = { c, next, '\0' };
+            for (size_t i = 0; i < sizeof(two_ops)/sizeof(two_ops[0]); ++i) {
+                if (strcmp(buf, two_ops[i]) == 0) { is_two = 1; break; }
+            }
+        }
+        if (is_two) {
+            token.lexeme = (char *)malloc(3);
+            token.lexeme[0] = c;
+            token.lexeme[1] = next;
+            token.lexeme[2] = '\0';
+            token.type = TOKEN_OPERATOR;
+            advance(lexer); /* consume first char -> moves to second */
+            advance(lexer); /* consume second char -> move past operator */
+        } else {
+            token.lexeme = (char *)malloc(2);
+            token.lexeme[0] = c;
+            token.lexeme[1] = '\0';
+            token.type = TOKEN_OPERATOR;
+            advance(lexer);
+        }
+        return token;
+    }
+
+    if (isDelimiter(lexer->currentChar)) { // Delimiter
+        token.lexeme = (char *)malloc(2);
+        token.lexeme[0] = lexer->currentChar;
+        token.lexeme[1] = '\0';
+        token.type = TOKEN_DELIMITER;
+        advance(lexer);
+        return token;
+    }
+
+    // Unknown token
+    token.lexeme = (char *)malloc(2);
+    token.lexeme[0] = lexer->currentChar;
+    token.lexeme[1] = '\0';
+    token.type = TOKEN_UNKNOWN;
+    advance(lexer);
+    return token;
 }
