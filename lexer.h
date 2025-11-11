@@ -8,6 +8,8 @@ typedef enum {
     TOKEN_RESERVEDWORD, // Reserved words (e.g. , etc.)
     TOKEN_NOISEWORD,    // Noise words (e.g. , etc.)
     TOKEN_IDENTIFIER,
+    TOKEN_NUMBER,   // Integer and floating-point numbers
+    TOKEN_STRING,   // String literals (e.g. "hello", 'a', etc.)
     TOKEN_OPERATOR,  // Arithmetic operators (e.g. +, -, *, /, %), Relational operators (e.g. ==, !=, <, >, <=, >=), Logical operators (e.g. &&, ||, !), Assignment operator (e.g. =, +=, -=, /=, %=)
     TOKEN_DELIMITER,    // Delimiters (e.g. ;, ,, ., (), {}, [])
     TOKEN_COMMENT,   // Comments (e.g. // comment, /* comment */)
