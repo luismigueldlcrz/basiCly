@@ -1,14 +1,42 @@
-digit num = 10 
+// Iterative
 
+digit sum 
+sum = 0
 
+cycle (digit i = 1: i <= 5: i++){
+	sum = sum + i
+}
 
+output("\nThe total sum is: " , sum)
 
+// Assignment
 
-hi;S
+digit x = 10
+digit y = 5
+digit sum = x + y
+indiv letter = 'A'
 
+output("Value of x: ", x)
+output("Value of y: ", y)
+output("Sum is: ", sum)
+output("Current letter: ", letter)
 
+// Conditional
 
+digit x = 7
+indiv grade = 'B'
 
+check (x > 0){
+    check (x < 10){
+        output("x is a single-digit positive number")
+    }
+    instead{
+        output("x is a two-digit or more positive number")
+    }
+instead{
+    output("x is not positive")
+    }
+}
 
 
 
