@@ -1,6 +1,7 @@
 #include "lexer.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 static const char *tokenTypeName(TokenType t) {
     switch (t) {
@@ -9,7 +10,7 @@ static const char *tokenTypeName(TokenType t) {
         case TOKEN_NOISEWORD:     return "NOISEWORD";
         case TOKEN_IDENTIFIER:    return "IDENTIFIER";
         case TOKEN_NUMBER:        return "NUMBER";
-        case TOKEN_STRING:        return "STRING";
+        case TOKEN_LITERAL:       return "LITERAL";
         case TOKEN_OPERATOR:      return "OPERATOR";
         case TOKEN_DELIMITER:     return "DELIMITER";
         case TOKEN_COMMENT:       return "COMMENT";
@@ -19,69 +20,75 @@ static const char *tokenTypeName(TokenType t) {
     }
 }
 
-int main() {
-    
-    FILE *file;
-    char *buffer;
-    long file_size;
-    Lexer lexer;
-    Token token;
+int main(int argc, char **argv) {
+    const char *input_file = "text.bsc";
+    if (argc >= 2) {
+        input_file = argv[1];
+        size_t len = strlen(input_file);
+        if (len < 4 ||
+            input_file[len-4] != '.' ||
+            input_file[len-3] != 'b' ||
+            input_file[len-2] != 's' ||
+            input_file[len-1] != 'c') {
+            fprintf(stderr, "Error: input file must have .bsc extension\n");
+            return 1;
+        }
+    }
 
-    // Open the source code file (e.g., "code.bsaiCly")
-    file = fopen("text.bsc", "r");
+    FILE *file = fopen(input_file, "rb");
     if (!file) {
-        printf("Error: Cannot open file.\n");
+        fprintf(stderr, "Error: Cannot open file %s\n", input_file);
         return 1;
     }
 
-    // Move to the end to measure file size
-    fseek(file, 0, SEEK_END);
-    file_size = ftell(file);
+    if (fseek(file, 0, SEEK_END) != 0) {
+        fprintf(stderr, "Error: fseek failed\n");
+        fclose(file);
+        return 1;
+    }
+    long file_size = ftell(file);
+    if (file_size < 0) file_size = 0;
     rewind(file);
 
-    // Allocate memory for the entire file content
-    buffer = (char *)malloc(file_size + 1);
+    char *buffer = (char *)malloc((size_t)file_size + 1);
     if (!buffer) {
-        printf("Error: Memory allocation failed.\n");
+        fprintf(stderr, "Error: Memory allocation failed.\n");
         fclose(file);
         return 1;
     }
 
-    // Read file content into buffer
-    fread(buffer, 1, file_size, file);
-    buffer[file_size] = '\0'; // null-terminate string
+    size_t read_bytes = fread(buffer, 1, (size_t)file_size, file);
+    buffer[read_bytes] = '\0';
     fclose(file);
 
-    // Initialize lexer with file content
+    Lexer lexer;
     initLexer(&lexer, buffer);
 
-    // Open symbol table output file
     FILE *out = fopen("symbol_table.txt", "w");
     if (!out) {
-        printf("Warning: Cannot open symbol_table.txt for writing. Continuing without file output.\n");
+        fprintf(stderr, "Warning: Cannot open symbol_table.txt for writing. Continuing without file output.\n");
     }
 
-    // Tokenize the input and write to symbol_table.txt
+    Token token;
     do {
         token = getNextToken(&lexer);
+
+        /* skip comments and noise words */
+        if (token.type == TOKEN_COMMENT || token.type == TOKEN_NOISEWORD) {
+            if (token.lexeme) free(token.lexeme);
+            continue;
+        }
+
         const char *lex = token.lexeme ? token.lexeme : "(null)";
         const char *type = tokenTypeName(token.type);
 
-        // print to console
         printf("Token: %-15s Type: %s\n", lex, type);
+        if (out) fprintf(out, "Token: %-15s Type: %s\n", lex, type);
 
-        // write to file if available
-        if (out) {
-            fprintf(out, "Token: %-15s Type: %s\n", lex, type);
-        }
-
-        if (token.lexeme) free(token.lexeme); // free memory allocated for token lexeme
+        if (token.lexeme) free(token.lexeme);
     } while (token.type != TOKEN_EOF);
 
     if (out) fclose(out);
-
-    // Free the buffer holding file content
     free(buffer);
-
     return 0;
 }
