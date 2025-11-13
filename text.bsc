@@ -7,7 +7,7 @@ cycle (digit i = 1: i <= 5: i++){
 	sum = sum + i
 }
 
-output("\nThe total sum is: " , sum)
+show("\nThe total sum is: " , sum)
 
 // Assignment
 
@@ -16,10 +16,10 @@ digit y = 5
 digit sum = x + y
 indiv letter = 'A'
 
-output("Value of x: ", x)
-output("Value of y: ", y)
-output("Sum is: ", sum)
-output("Current letter: ", letter)
+show("Value of x: ", x)
+show("Value of y: ", y)
+show("Sum is: ", sum)
+show("Current letter: ", letter)
 
 // Conditional
 
@@ -28,13 +28,13 @@ indiv grade = 'B'
 
 check (x > 0){
     check (x < 10){
-        output("x is a single-digit positive number")
+        show("x is a single-digit positive number")
     }
     instead{
-        output("x is a two-digit or more positive number")
+        show("x is a two-digit or more positive number")
     }
 instead{
-    output("x is not positive")
+    show("x is not positive")
     }
 }
 
