@@ -4,15 +4,15 @@
 #include <stdio.h>
 
 typedef enum {
-    TOKEN_KEYWORD,  // Keywords (e.g. digit, shortdecimal, longdecimal, check, etc.)
-    TOKEN_RESERVEDWORD, // Reserved words (e.g. , etc.)
-    TOKEN_NOISEWORD,    // Noise words (e.g. , etc.)
+    TOKEN_KEYWORD,        // Keywords (e.g. digit, check, output, show, etc.)
+    TOKEN_RESERVEDWORD,   // Reserved words (e.g. int, float, if, else, ...)
+    TOKEN_NOISEWORD,      // Noise words to ignore (e.g. the, a, an, to, ...)
     TOKEN_IDENTIFIER,
-    TOKEN_NUMBER,   // Integer and floating-point numbers
-    TOKEN_STRING,   // String literals (e.g. "hello", 'a', etc.)
-    TOKEN_OPERATOR,  // Arithmetic operators (e.g. +, -, *, /, %), Relational operators (e.g. ==, !=, <, >, <=, >=), Logical operators (e.g. &&, ||, !), Assignment operator (e.g. =, +=, -=, /=, %=)
-    TOKEN_DELIMITER,    // Delimiters (e.g. ;, ,, ., (), {}, [])
-    TOKEN_COMMENT,   // Comments (e.g. // comment, /* comment */)
+    TOKEN_NUMBER,         // Integer and floating-point numbers
+    TOKEN_LITERAL,        // String literal (e.g. "hello")
+    TOKEN_OPERATOR,       // Operators
+    TOKEN_DELIMITER,      // Delimiters (e.g. ; , . ( ) { } [ ])
+    TOKEN_COMMENT,        // Comments (single-line and multi-line)
     TOKEN_EOF,
     TOKEN_UNKNOWN
 } TokenType;
@@ -23,7 +23,7 @@ typedef struct {
     char *lexeme;
 } Token;
 
-// Lexeme Structure
+// Lexer state
 typedef struct {
     const char *source;
     int position;
@@ -42,5 +42,7 @@ int isDigit(char c);
 int isOperator(char c);
 int isDelimiter(char c);
 int isKeyword(const char *lexeme);
+int isReservedWord(const char *lexeme);
+int isNoiseWord(const char *lexeme);
 
 #endif
