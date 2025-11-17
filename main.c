@@ -80,12 +80,9 @@ char* readFile(const char* filename) {
 }
 
 int main(int argc, char *argv[]) {
-    if (argc < 2) {
-        printf("Usage: %s <source_file.bsc>\n", argv[0]);
-        return 1;
-    }
+    const char *filename = "test.bsc";
 
-    char *sourceCode = readFile(argv[1]);
+    char *sourceCode = readFile(filename);
     if (!sourceCode) return 1;
 
     Lexer lexer;
