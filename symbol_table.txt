@@ -6,5 +6,5 @@ Token: indiv           Type: KEYWORD
 Token: letter          Type: IDENTIFIER
 Token: letter          Type: IDENTIFIER
 Token: =               Type: OPERATOR
-Token: ‘A’         Type: LITERAL
+Token: "Hello World"   Type: LITERAL
 Token: EOF             Type: EOF
