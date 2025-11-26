@@ -2,33 +2,19 @@
 #include <stdlib.h>
 #include <string.h>
 
-/* small helper to copy len chars and null-terminate (no strdup/strndup/strcmp) */
-static char *copyLexeme(const char *src, int len) {
-    char *p = (char *)malloc(len + 1);
-    if (!p) return NULL;
-    if (len > 0) memcpy(p, src, len);
-    p[len] = '\0';
-    return p;
-}
-
-/* helpers for UTF-8 curly single quotes detection (file-scope, no nested functions) */
-static int utf8_has_three_bytes(const unsigned char *s, int p) {
-    return s[p] != '\0' && s[p+1] != '\0' && s[p+2] != '\0';
-}
-static int utf8_left_single_at(const unsigned char *s, int p) {
-    /* U+2018 = E2 80 98 */
-    return utf8_has_three_bytes(s, p) && s[p] == 0xE2 && s[p+1] == 0x80 && s[p+2] == 0x98;
-}
-static int utf8_right_single_at(const unsigned char *s, int p) {
-    /* U+2019 = E2 80 99 */
-    return utf8_has_three_bytes(s, p) && s[p] == 0xE2 && s[p+1] == 0x80 && s[p+2] == 0x99;
-}
+/* ============================
+   LEXER INITIALIZATION
+   ============================ */
 
 void initLexer(Lexer *lexer, const char *source) {
     lexer->source = source;
     lexer->position = 0;
     lexer->currentChar = source[0];
 }
+
+/* ============================
+   LEXER UTILITY FUNCTIONS
+   ============================ */
 
 void advance(Lexer *lexer) {
     lexer->position++;
@@ -42,28 +28,34 @@ void skipWhitespace(Lexer *lexer) {
     }
 }
 
+/* ============================
+   HELPER FUNCTIONS
+   ============================ */
+
 int isAlpha(char c) {
-    unsigned char uc = (unsigned char)c;
-    return (uc >= 'a' && uc <= 'z') || (uc >= 'A' && uc <= 'Z') || (uc == '_');
+    return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c == '_');
 }
 
 int isDigit(char c) {
-    unsigned char uc = (unsigned char)c;
-    return (uc >= '0' && uc <= '9');
+    return (c >= '0' && c <= '9');
 }
 
 int isOperator(char c) {
     return c == '+' || c == '-' || c == '*' || c == '/' || c == '%' ||
-           c == '=' || c == '!' || c == '<' || c == '>' ||
-           c == '&' || c == '|';
+           c == '=' || c == '<' || c == '>' || c == '!' || c == '&' ||
+           c == '|';
 }
 
 int isDelimiter(char c) {
-    return c == ';' || c == ',' || c == '.' || c == '(' || c == ')' ||
-           c == '{' || c == '}' || c == '[' || c == ']';
+    return c == '(' || c == ')' || c == '{' || c == '}' ||
+           c == '[' || c == ']' || c == ',' || c == ';' ||
+           c == '.' || c == ':' || c == '"' || c == '\'';
 }
 
-/* keyword detection using switch-based char-by-char matching */
+/* ============================
+   WORD CLASSIFICATION
+   ============================ */
+
 int isKeyword(const char *lexeme) {
     if (!lexeme || !lexeme[0]) return 0;
     switch (lexeme[0]) {
@@ -74,277 +66,330 @@ int isKeyword(const char *lexeme) {
         case 'd': /* digit, during */
             if (lexeme[1]=='i' && lexeme[2]=='g' && lexeme[3]=='i' && lexeme[4]=='t' && lexeme[5]=='\0') return 1;
             break;
-        case 'i': /* indiv */
+        case 'i': /* indiv, instead */
             if (lexeme[1]=='n' && lexeme[2]=='d' && lexeme[3]=='i' && lexeme[4]=='v' && lexeme[5]=='\0') return 1;
+            if (lexeme[1]=='n' && lexeme[2]=='s' && lexeme[3]=='t' && lexeme[4]=='e' && lexeme[5]=='a' && lexeme[6]=='d' && lexeme[7]=='\0') return 1;
+            break;
+        case 'l': /* large, long */
+            if (lexeme[1]=='a' && lexeme[2]=='r' && lexeme[3]=='g' && lexeme[4]=='e' && lexeme[5]=='\0') return 1;
+            if (lexeme[1]=='o' && lexeme[2]=='n' && lexeme[3]=='g' && lexeme[4]=='\0') return 1;
+            break;
+        case 'o': /* otherwise */
+            if (lexeme[1]=='t' && lexeme[2]=='h' && lexeme[3]=='e' && lexeme[4]=='r' && lexeme[5]=='w' && lexeme[6]=='i' && lexeme[7]=='s' && lexeme[8]=='e' && lexeme[9]=='\0') return 1;
+            break;
+        case 'p': /* perform */
+            if (lexeme[1]=='e' && lexeme[2]=='f' && lexeme[3]=='o' && lexeme[4]=='r' && lexeme[5]=='m' && lexeme[6]=='\0') return 1;
+            break;
+        case 's': /* select, short, skip, stop*/
+            if (lexeme[1]=='e' && lexeme[2]=='l' && lexeme[3]=='e' && lexeme[4]=='c' && lexeme[5]=='t' && lexeme[6]=='\0') return 1;
+            if (lexeme[1]=='h' && lexeme[2]=='o' && lexeme[3]=='r' && lexeme[4]=='t' && lexeme[5]=='\0') return 1;
+            if (lexeme[1]=='k' && lexeme[2]=='i' && lexeme[3]=='p' && lexeme[4]=='\0') return 1;
+            if (lexeme[1]=='t' && lexeme[2]=='o' && lexeme[3]=='p' && lexeme[4]=='\0') return 1;
+            break;
+        case 't': /* tiny, test */
+            if (lexeme[1]=='i' && lexeme[2]=='n' && lexeme[3]=='y' && lexeme[4]=='\0') return 1;
+            break;
+        case 'w': /* when */
+            if (lexeme[1]=='h' && lexeme[2]=='e' && lexeme[3]=='n' && lexeme[4]=='\0') return 1;
+            break;
+    }
+    return 0;
+}
+
+int isReservedWord(const char *lexeme) {
+    if (!lexeme || !lexeme[0]) return 0;
+    switch (lexeme[0]) {
+        case 'a': /* alias */
+            if (lexeme[1]=='l' && lexeme[2]=='i' && lexeme[3]=='a' && lexeme[4]=='s' && lexeme[5]=='\0') return 1;
+            break;
+        case 'b': /* blank, bothsign */
+            if (lexeme[1]=='l' && lexeme[2]=='a' && lexeme[3]=='n' && lexeme[4]=='k' && lexeme[5]=='\0') return 1;
+            if (lexeme[1]=='o' && lexeme[2]=='t' && lexeme[3]=='h' && lexeme[4]=='s' && lexeme[5]=='i' && lexeme[6]=='g' && lexeme[7]=='n' && lexeme[8]=='\0') return 1;
+            break;
+        case 'f': /* false, fixed */
+            if (lexeme[1]=='a' && lexeme[2]=='l' && lexeme[3]=='s' && lexeme[4]=='e' && lexeme[5]=='\0') return 1;
+            if (lexeme[1]=='i' && lexeme[2]=='x' && lexeme[3]=='e' && lexeme[4]=='d' && lexeme[5]=='\0') return 1;
+            break;
+        case 'g': /* group */
+            if (lexeme[1]=='r' && lexeme[2]=='o' && lexeme[3]=='u' && lexeme[4]=='p' && lexeme[5]=='\0') return 1;
+            break;
+        case 'j': /* jumpto */
+            if (lexeme[1]=='u' && lexeme[2]=='m' && lexeme[3]=='p' && lexeme[4]=='t' && lexeme[5]=='o' && lexeme[6]=='\0') return 1;
+            break;
+        case 'k': /* keep */
+            if (lexeme[1]=='e' && lexeme[2]=='e' && lexeme[3]=='p' && lexeme[4]=='\0') return 1;
+            break;
+        case 'l': /* link, live, local */
+            if (lexeme[1]=='i' && lexeme[2]=='n' && lexeme[3]=='k' && lexeme[4]=='\0') return 1;
+            if (lexeme[1]=='i' && lexeme[2]=='v' && lexeme[3]=='e' && lexeme[4]=='\0') return 1;
+            if (lexeme[1]=='o' && lexeme[2]=='c' && lexeme[3]=='a' && lexeme[4]=='l' && lexeme[5]=='\0') return 1;
             break;
         case 'o': /* output */
             if (lexeme[1]=='u' && lexeme[2]=='t' && lexeme[3]=='p' && lexeme[4]=='u' && lexeme[5]=='t' && lexeme[6]=='\0') return 1;
             break;
-        case 's': /* show */
-            if (lexeme[1]=='h' && lexeme[2]=='o' && lexeme[3]=='w' && lexeme[4]=='\0') return 1;
+        case 'r': /* register */
+            if (lexeme[1]=='e' && lexeme[2]=='g' && lexeme[3]=='i' && lexeme[4]=='s' && lexeme[5]=='t' && lexeme[6]=='e' && lexeme[7]=='r' && lexeme[8]=='\0') return 1;
+            break;
+        case 's': /* set, shared, size */
+            if (lexeme[1]=='e' && lexeme[2]=='t' && lexeme[3]=='\0') return 1;
+            if (lexeme[1]=='h' && lexeme[2]=='a' && lexeme[3]=='r' && lexeme[4]=='e' && lexeme[5]=='d' && lexeme[6]=='\0') return 1;
+            if (lexeme[1]=='i' && lexeme[2]=='z' && lexeme[3]=='e' && lexeme[4]=='\0') return 1;
+            break;
+        case 't': /* true */
+            if (lexeme[1]=='r' && lexeme[2]=='u' && lexeme[3]=='e' && lexeme[4]=='\0') return 1;
+            break;
+        case 'w': /* whole */
+            if (lexeme[1]=='h' && lexeme[2]=='o' && lexeme[3]=='l' && lexeme[4]=='e' && lexeme[5]=='\0') return 1;
             break;
     }
     return 0;
 }
 
-/* reserved words (e.g., data types and control structures) */
-int isReservedWord(const char *lexeme) {
-    if (!lexeme || !lexeme[0]) return 0;
-    switch (lexeme[0]) {
-        case 'i': /* int, if */
-            if (lexeme[1]=='n' && lexeme[2]=='t' && lexeme[3]=='\0') return 1;
-            if (lexeme[1]=='f' && lexeme[2]=='\0') return 1;
-            break;
-        case 'f': /* float, for */
-            if (lexeme[1]=='l' && lexeme[2]=='o' && lexeme[3]=='a' && lexeme[4]=='t' && lexeme[5]=='\0') return 1;
-            if (lexeme[1]=='o' && lexeme[2]=='r' && lexeme[3]=='\0') return 1;
-            break;
-        case 'c': /* char */
-            if (lexeme[1]=='h' && lexeme[2]=='a' && lexeme[3]=='r' && lexeme[4]=='\0') return 1;
-            break;
-        case 'v': /* void */
-            if (lexeme[1]=='o' && lexeme[2]=='i' && lexeme[3]=='d' && lexeme[4]=='\0') return 1;
-            break;
-        case 'r': /* return */
-            if (lexeme[1]=='e' && lexeme[2]=='t' && lexeme[3]=='u' && lexeme[4]=='r' && lexeme[5]=='n' && lexeme[6]=='\0') return 1;
-            break;
-        case 'e': /* else */
-            if (lexeme[1]=='l' && lexeme[2]=='s' && lexeme[3]=='e' && lexeme[4]=='\0') return 1;
-            break;
-        case 'w': /* while */
-            if (lexeme[1]=='h' && lexeme[2]=='i' && lexeme[3]=='l' && lexeme[4]=='e' && lexeme[5]=='\0') return 1;
-            break;
-    }
-    return 0;
-}
-
-/* noise words to ignore in final output */
 int isNoiseWord(const char *lexeme) {
     if (!lexeme || !lexeme[0]) return 0;
     switch (lexeme[0]) {
-        case 'a':
-            if (lexeme[1]=='\0') return 1; /* "a" */
-            if (lexeme[1]=='n' && lexeme[2]=='\0') return 1; /* "an" */
+        case 'f': /* from */
+            if (lexeme[1]=='r' && lexeme[2]=='o' && lexeme[3]=='m' && lexeme[4]=='\0') return 1;
             break;
-        case 't':
-            if (lexeme[1]=='h' && lexeme[2]=='e' && lexeme[3]=='\0') return 1; /* the */
-            if (lexeme[1]=='o' && lexeme[2]=='\0') return 1; /* to */
+        case 't': /* then */
+            if (lexeme[1]=='h' && lexeme[2]=='e' && lexeme[3]=='n' && lexeme[4]=='\0') return 1;
             break;
-        case 'o':
-            if (lexeme[1]=='f' && lexeme[2]=='\0') return 1; /* of */
-            break;
-        case 'i':
-            if (lexeme[1]=='s' && lexeme[2]=='\0') return 1; /* is */
-            if (lexeme[1]=='n' && lexeme[2]=='\0') return 1; /* in */
-            break;
-        case 'b':
-            if (lexeme[1]=='y' && lexeme[2]=='\0') return 1; /* by */
-            break;
-        case 'f':
-            if (lexeme[1]=='o' && lexeme[2]=='r' && lexeme[3]=='\0') return 1; /* for */
-            break;
-        case 'w':
-            if (lexeme[1]=='i' && lexeme[2]=='t' && lexeme[3]=='h' && lexeme[4]=='\0') return 1; /* with */
+        case 'w': /* with */
+            if (lexeme[1]=='i' && lexeme[2]=='t' && lexeme[3]=='h' && lexeme[4]=='\0') return 1;
             break;
     }
     return 0;
 }
 
-/* check two-character operator pairs without strcmp */
-static int matchTwoCharOp(char a, char b) {
-    /* list of supported two-char operators */
-    const char pairs[][2] = {
-        {'=', '='}, {'!', '='}, {'<', '='}, {'>', '='},
-        {'&', '&'}, {'|', '|'}, {'+', '+'}, {'-', '-'},
-        {'+', '='}, {'-', '='}, {'*', '='}, {'/', '='}, {'%', '='}
-    };
-    for (size_t i = 0; i < sizeof(pairs)/sizeof(pairs[0]); ++i) {
-        if (pairs[i][0] == a && pairs[i][1] == b) return 1;
-    }
-    return 0;
-}
-
+/* ============================
+   GET NEXT TOKEN
+   ============================ */
+   
 Token getNextToken(Lexer *lexer) {
+    skipWhitespace(lexer);
+
     Token token;
     token.lexeme = NULL;
     token.type = TOKEN_UNKNOWN;
 
-    skipWhitespace(lexer);
+    char c = lexer->currentChar;
 
-    /* EOF */
-    if (lexer->currentChar == '\0') {
+    if (c == '\0') {
         token.type = TOKEN_EOF;
-        token.lexeme = copyLexeme("EOF", 3);
+        token.lexeme = (char *)malloc(4);
+        strcpy(token.lexeme, "EOF");
         return token;
     }
 
-    /* Comments */
-    if (lexer->currentChar == '#') { /* single-line comment until newline */
-        int start = lexer->position;
-        advance(lexer);
-        while (lexer->currentChar != '\0' && lexer->currentChar != '\n') advance(lexer);
-        int len = lexer->position - start;
-        token.lexeme = copyLexeme(lexer->source + start, len);
-        token.type = TOKEN_COMMENT;
-        return token;
-    }
-    if (lexer->currentChar == '~' && lexer->source[lexer->position + 1] == '^') { /* multi-line ~^ ... ^~ */
-        int start = lexer->position;
-        advance(lexer); /* ~ */
-        advance(lexer); /* ^ */
-        while (lexer->currentChar != '\0') {
-            if (lexer->currentChar == '^' && lexer->source[lexer->position + 1] == '~') {
-                advance(lexer); /* ^ */
-                advance(lexer); /* ~ */
-                break;
-            }
-            advance(lexer);
-        }
-        int len = lexer->position - start;
-        token.lexeme = copyLexeme(lexer->source + start, len);
-        token.type = TOKEN_COMMENT;
-        return token;
-    }
-
-    /* String literal (double quotes) */
-    if (lexer->currentChar == '"') {
-        int start = lexer->position;
-        advance(lexer); /* consume opening " */
-        while (lexer->currentChar != '\0') {
-            if (lexer->currentChar == '\\') { /* escape sequence: include next char */
-                advance(lexer);
-                if (lexer->currentChar == '\0') break;
-                advance(lexer);
-                continue;
-            }
-            if (lexer->currentChar == '"') {
-                advance(lexer); /* consume closing " */
-                break;
-            }
-            advance(lexer);
-        }
-        int len = lexer->position - start;
-        token.lexeme = copyLexeme(lexer->source + start, len);
-        token.type = TOKEN_LITERAL;
-        return token;
-    }
-
-    /* Single-quoted char literal (accept ASCII ' and curly quotes U+2018/U+2019 in UTF-8) */
-    {
-        const unsigned char *src = (const unsigned char *)lexer->source;
-        int pos = lexer->position;
-
-        if ( (src[pos] == (unsigned char)'\'' ) || utf8_left_single_at(src, pos) ) {
-            int start = pos;
-
-            /* consume opening quote: ASCII (1 byte) or UTF-8 left single (3 bytes) */
-            if (src[pos] == (unsigned char)'\'' ) {
-                advance(lexer);
-            } else { /* UTF-8 left single */
-                advance(lexer); advance(lexer); advance(lexer);
-            }
-
-            /* collect until matching closing quote */
-            while (lexer->currentChar != '\0') {
-                /* ASCII close */
-                if ((unsigned char)lexer->currentChar == (unsigned char)'\'' ) {
-                    advance(lexer);
-                    break;
-                }
-                /* UTF-8 right single close? */
-                if (utf8_right_single_at(src, lexer->position)) {
-                    advance(lexer); advance(lexer); advance(lexer);
-                    break;
-                }
-                /* escape */
-                if (lexer->currentChar == '\\') {
-                    advance(lexer);
-                    if (lexer->currentChar == '\0') break;
-                    advance(lexer);
-                    continue;
-                }
-                advance(lexer);
-            }
-
+    if (c == '/') {
+        char nextChar = lexer->source[lexer->position + 1];
+        if (nextChar == '/') {
+            // Line comment
+            advance(lexer); advance(lexer); // skip "//"
+            int start = lexer->position;
+            while (lexer->currentChar != '\0' && lexer->currentChar != '\n') advance(lexer);
             int len = lexer->position - start;
-            token.lexeme = copyLexeme(lexer->source + start, len);
-            token.type = TOKEN_LITERAL;
+            token.lexeme = (char *)malloc(len + 1);
+            for (int i = 0; i < len; i++) token.lexeme[i] = lexer->source[start + i];
+            token.lexeme[len] = '\0';
+            token.type = TOKEN_LINE_COMMENT;
+            return token;
+        } else if (nextChar == '*') {
+            // Block comment
+            advance(lexer); advance(lexer); // skip "/*"
+            int start = lexer->position;
+            while (!(lexer->currentChar == '*' && lexer->source[lexer->position + 1] == '/') && lexer->currentChar != '\0') advance(lexer);
+            int len = lexer->position - start;
+            token.lexeme = (char *)malloc(len + 1);
+            for (int i = 0; i < len; i++) token.lexeme[i] = lexer->source[start + i];
+            token.lexeme[len] = '\0';
+            token.type = TOKEN_BLOCK_COMMENT;
+            if (lexer->currentChar != '\0') { advance(lexer); advance(lexer); } // skip "*/"
             return token;
         }
     }
-
-    /* Identifier / Keyword / Reserved / Noise */
-    if (isAlpha(lexer->currentChar)) {
-        int start = lexer->position;
-        while (isAlpha(lexer->currentChar) || isDigit(lexer->currentChar)) advance(lexer);
-        int len = lexer->position - start;
-        token.lexeme = copyLexeme(lexer->source + start, len);
-        if (isNoiseWord(token.lexeme)) {
-            token.type = TOKEN_NOISEWORD;
-        } else if (isKeyword(token.lexeme)) {
-            token.type = TOKEN_KEYWORD;
-        } else if (isReservedWord(token.lexeme)) {
-            token.type = TOKEN_RESERVEDWORD;
-        } else {
-            token.type = TOKEN_IDENTIFIER;
-        }
+    if (c == '\0') {
+        token.type = TOKEN_EOF;
         return token;
     }
 
-    /* Number */
-    if (isDigit(lexer->currentChar) || (lexer->currentChar == '-' && isDigit(lexer->source[lexer->position + 1]))) {
+    /* Identifiers / Keywords / Reserved / Noise */
+    if (isAlpha(c)) {
         int start = lexer->position;
-        if (lexer->currentChar == '-') advance(lexer); /* include negative sign */
-        while (isDigit(lexer->currentChar)) advance(lexer);
-        /* optional fractional part */
-        if (lexer->currentChar == '.') {
+        while (isAlpha(lexer->currentChar) || isDigit(lexer->currentChar)) {
             advance(lexer);
-            while (isDigit(lexer->currentChar)) advance(lexer);
         }
         int len = lexer->position - start;
-        token.lexeme = copyLexeme(lexer->source + start, len);
-        token.type = TOKEN_NUMBER;
+        token.lexeme = (char *)malloc(len + 1);
+        for (int i = 0; i < len; i++) {
+            token.lexeme[i] = lexer->source[start + i];
+        }
+        token.lexeme[len] = '\0';
+
+        if (isKeyword(token.lexeme)) token.type = TOKEN_KEYWORD;
+        else if (isReservedWord(token.lexeme)) token.type = TOKEN_RESERVEDWORD;
+        else if (isNoiseWord(token.lexeme)) token.type = TOKEN_NOISEWORD;
+        else token.type = TOKEN_IDENTIFIER;
+
         return token;
     }
 
-    /* Operator (single or two-char) */
-    if (isOperator(lexer->currentChar)) {
-        char c = lexer->currentChar;
-        char next = lexer->source[lexer->position + 1];
-        if (next != '\0' && matchTwoCharOp(c, next)) {
-            token.lexeme = (char *)malloc(3);
-            token.lexeme[0] = c;
-            token.lexeme[1] = next;
-            token.lexeme[2] = '\0';
-            token.type = TOKEN_OPERATOR;
-            advance(lexer); /* consume first */
-            advance(lexer); /* consume second */
-            return token;
-        } else {
-            token.lexeme = (char *)malloc(2);
-            token.lexeme[0] = c;
-            token.lexeme[1] = '\0';
-            token.type = TOKEN_OPERATOR;
+    /* Numbers */
+    if (isDigit(c)) {
+        int start = lexer->position;
+        int hasDot = 0;
+        while (isDigit(lexer->currentChar) || (lexer->currentChar=='.' && !hasDot)) {
+            if (lexer->currentChar=='.') hasDot = 1;
             advance(lexer);
-            return token;
         }
+        int len = lexer->position - start;
+        token.lexeme = (char *)malloc(len + 1);
+        for (int i=0; i<len; i++) token.lexeme[i] = lexer->source[start + i];
+        token.lexeme[len] = '\0';
+        token.type = hasDot ? TOKEN_FLOAT_LITERAL : TOKEN_INT_LITERAL;
+        return token;
     }
 
-    /* Delimiter */
-    if (isDelimiter(lexer->currentChar)) {
-        token.lexeme = (char *)malloc(2);
-        token.lexeme[0] = lexer->currentChar;
-        token.lexeme[1] = '\0';
-        token.type = TOKEN_DELIMITER;
+    /* Strings */
+    if (c == '"') {
+        advance(lexer); // skip "
+        int start = lexer->position;
+        while (lexer->currentChar != '"' && lexer->currentChar != '\0') advance(lexer);
+        int len = lexer->position - start;
+        token.lexeme = (char *)malloc(len + 1);
+        for (int i=0; i<len; i++) token.lexeme[i] = lexer->source[start + i];
+        token.lexeme[len] = '\0';
+        token.type = TOKEN_STRING_LITERAL;
+        advance(lexer); // skip closing "
+        return token;
+    }
+
+    /* Delimiters */
+    if (isDelimiter(c)) {
         advance(lexer);
+        token.lexeme = (char *)malloc(2);
+        token.lexeme[0] = c;
+        token.lexeme[1] = '\0';
+
+        switch(c) {
+            case '(': token.type = TOKEN_LEFT_PARENTHESIS; break;
+            case ')': token.type = TOKEN_RIGHT_PARENTHESIS; break;
+            case '{': token.type = TOKEN_LEFT_BRACE; break;
+            case '}': token.type = TOKEN_RIGHT_BRACE; break;
+            case '[': token.type = TOKEN_LEFT_BRACKET; break;
+            case ']': token.type = TOKEN_RIGHT_BRACKET; break;
+            case ',': token.type = TOKEN_COMMA; break;
+            case ';': token.type = TOKEN_SEMICOLON; break;
+            // case '.': token.type = TOKEN_DOT; break;
+            case ':': token.type = TOKEN_COLON; break;
+            case '"': token.type = TOKEN_STRING_QUOTATION; break;
+            case '\'': token.type = TOKEN_CHAR_QUOTATION; break;
+        }
         return token;
     }
 
-    /* Unknown single character */
-    token.lexeme = (char *)malloc(2);
-    token.lexeme[0] = lexer->currentChar;
+    /* Operators (single-char) */
+    if (isOperator(c)) {
+    char nextChar = lexer->source[lexer->position + 1];
+
+    token.lexeme = (char *)malloc(3);
+    token.lexeme[0] = c;
     token.lexeme[1] = '\0';
-    token.type = TOKEN_UNKNOWN;
+
+    int twoChar = 0; // flag for two-character operator
+
+    /* Detect two-character operators */
+    switch (c) {
+        case '+':
+            if (nextChar == '+' || nextChar == '=') twoChar = 1;
+            break;
+
+        case '-':
+            if (nextChar == '-' || nextChar == '=') twoChar = 1;
+            break;
+
+        case '*':
+            if (nextChar == '=') twoChar = 1;
+            break;
+
+        case '/':
+            if (nextChar == '=') twoChar = 1;
+            break;
+
+        case '%':
+            if (nextChar == '=') twoChar = 1;
+            break;
+
+        case '=':
+            if (nextChar == '=') twoChar = 1;
+            break;
+
+        case '!':
+            if (nextChar == '=') twoChar = 1;
+            break;
+
+        case '<':
+            if (nextChar == '=') twoChar = 1;
+            break;
+
+        case '>':
+            if (nextChar == '=') twoChar = 1;
+            break;
+        case '&':
+            if (nextChar == '&') twoChar = 1;
+            break;
+        case '|':
+            if (nextChar == '|') twoChar = 1;
+            break;
+    }
+
+    /* Build lexeme if two-character operator */
+    if (twoChar) {
+        token.lexeme[1] = nextChar;
+        token.lexeme[2] = '\0';
+        advance(lexer); // consume second character
+    }
+
+    advance(lexer); // consume first character
+
+    /* Assign token type */
+    if (c == '+' && nextChar == '+') token.type = TOKEN_INCREMENT_OPERATOR;
+    else if (c == '-' && nextChar == '-') token.type = TOKEN_DECREMENT_OPERATOR;
+    else if (c == '+' && nextChar == '=') token.type = TOKEN_PLUS_ASSIGN_OPERATOR;
+    else if (c == '-' && nextChar == '=') token.type = TOKEN_MINUS_ASSIGN_OPERATOR;
+    else if (c == '*' && nextChar == '=') token.type = TOKEN_MULTIPLY_ASSIGN_OPERATOR;
+    else if (c == '/' && nextChar == '=') token.type = TOKEN_DIVIDE_ASSIGN_OPERATOR;
+    else if (c == '%' && nextChar == '=') token.type = TOKEN_MODULO_ASSIGN_OPERATOR;
+    else if (c == '=' && nextChar == '=') token.type = TOKEN_EQUAL_OPERATOR;
+    else if (c == '!' && nextChar == '=') token.type = TOKEN_NOT_EQUAL_OPERATOR;
+    else if (c == '<' && nextChar == '=') token.type = TOKEN_LESS_EQUAL_OPERATOR;
+    else if (c == '>' && nextChar == '=') token.type = TOKEN_GREATER_EQUAL_OPERATOR;
+    else if (c == '&' && nextChar == '&') token.type = TOKEN_LOGICAL_AND_OPERATOR;
+    else if (c == '|' && nextChar == '|') token.type = TOKEN_LOGICAL_OR_OPERATOR;
+
+    /* Single-character operators */
+    else {
+        switch (c) {
+            case '+': token.type = TOKEN_PLUS_OPERATOR; break;
+            case '-': token.type = TOKEN_MINUS_OPERATOR; break;
+            case '*': token.type = TOKEN_MULTIPLY_OPERATOR; break;
+            case '/': token.type = TOKEN_DIVIDE_OPERATOR; break;
+            case '%': token.type = TOKEN_MODULO_OPERATOR; break;
+            case '=': token.type = TOKEN_ASSIGN_OPERATOR; break;
+            case '!': token.type = TOKEN_LOGICAL_NOT_OPERATOR; break;
+            case '<': token.type = TOKEN_LESS_THAN_OPERATOR; break;
+            case '>': token.type = TOKEN_GREATER_THAN_OPERATOR; break;
+        }
+    }
+
+    return token;
+}
+
+    /* Unknown character */
+    token.lexeme = (char *)malloc(2);
+    token.lexeme[0] = c;
+    token.lexeme[1] = '\0';
     advance(lexer);
+    token.type = TOKEN_UNKNOWN;
     return token;
 }

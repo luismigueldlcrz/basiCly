@@ -1,0 +1,104 @@
+// id
+
+ABCD
+abcd
+Abcd
+aBcd
+Num23
+_hello2
+
+// key
+
+check
+indiv
+otherwise
+skip
+cycle
+instead
+perform
+stop
+digit
+large
+select
+tiny
+during
+long
+short
+when
+
+//reserved
+
+alias
+group
+local
+size
+blank
+jumpto
+output
+true
+bothsign
+keep
+register
+whole
+false
+link
+set
+fixed
+live
+shared
+
+// constant values
+
+fixed digit x = 10
+fixed short pi = 3.14
+fixed indiv letter = 'A'
+fixed text name = "apple"
+
+//noise
+
+from
+then
+with
+
+//comment
+
+// can you read this?
+/* please read
+not sure if this all true *\
+
+// arithmetic/7
+
++
+-
+*
+/
+%
+** 
+DIV
+
+// Boolean/9
+
+==
+!=
+>
+<
+>=
+<=
+&&
+||
+!
+
+// Delimeters and brackets
+
+( )
+{ }
+[ ]
+:
+,
+" "
+‘ ’
+
+//invalid
+
+
+

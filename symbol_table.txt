@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 Token: digit           Type: KEYWORD
 Token: num             Type: IDENTIFIER
 Token: =               Type: OPERATOR
@@ -8,3 +9,131 @@ Token: letter          Type: IDENTIFIER
 Token: =               Type: OPERATOR
 Token: "Hello World"   Type: LITERAL
 Token: EOF             Type: EOF
+=======
+Lexeme:  Iterative     Token: LINE_COMMENT
+Lexeme: digit           Token: KEYWORD
+Lexeme: sum             Token: IDENTIFIER
+Lexeme: sum             Token: IDENTIFIER
+Lexeme: =               Token: ASSIGN_OPERATOR
+Lexeme: 0               Token: INT_LITERAL
+Lexeme: cycle           Token: KEYWORD
+Lexeme: (               Token: LEFT_PARENTHESIS
+Lexeme: digit           Token: KEYWORD
+Lexeme: i               Token: IDENTIFIER
+Lexeme: =               Token: ASSIGN_OPERATOR
+Lexeme: 1               Token: INT_LITERAL
+Lexeme: :               Token: COLON
+Lexeme: i               Token: IDENTIFIER
+Lexeme: <=              Token: LESS_EQUAL_OPERATOR
+Lexeme: 5               Token: INT_LITERAL
+Lexeme: :               Token: COLON
+Lexeme: i               Token: IDENTIFIER
+Lexeme: ++              Token: INCREMENT_OPERATOR
+Lexeme: )               Token: RIGHT_PARENTHESIS
+Lexeme: {               Token: LEFT_BRACE
+Lexeme: sum             Token: IDENTIFIER
+Lexeme: =               Token: ASSIGN_OPERATOR
+Lexeme: sum             Token: IDENTIFIER
+Lexeme: +               Token: PLUS_OPERATOR
+Lexeme: i               Token: IDENTIFIER
+Lexeme: }               Token: RIGHT_BRACE
+Lexeme: show            Token: IDENTIFIER
+Lexeme: (               Token: LEFT_PARENTHESIS
+Lexeme: The total sum is:  Token: STRING_LITERAL
+Lexeme: ,               Token: COMMA
+Lexeme: sum             Token: IDENTIFIER
+Lexeme: )               Token: RIGHT_PARENTHESIS
+Lexeme:  Assignment    Token: LINE_COMMENT
+Lexeme: digit           Token: KEYWORD
+Lexeme: x               Token: IDENTIFIER
+Lexeme: =               Token: ASSIGN_OPERATOR
+Lexeme: 10              Token: INT_LITERAL
+Lexeme: digit           Token: KEYWORD
+Lexeme: y               Token: IDENTIFIER
+Lexeme: =               Token: ASSIGN_OPERATOR
+Lexeme: 5               Token: INT_LITERAL
+Lexeme: digit           Token: KEYWORD
+Lexeme: sum             Token: IDENTIFIER
+Lexeme: =               Token: ASSIGN_OPERATOR
+Lexeme: x               Token: IDENTIFIER
+Lexeme: +               Token: PLUS_OPERATOR
+Lexeme: y               Token: IDENTIFIER
+Lexeme: indiv           Token: KEYWORD
+Lexeme: letter          Token: IDENTIFIER
+Lexeme: =               Token: ASSIGN_OPERATOR
+Lexeme: '               Token: CHAR_QUOTATION
+Lexeme: A               Token: IDENTIFIER
+Lexeme: '               Token: CHAR_QUOTATION
+Lexeme: show            Token: IDENTIFIER
+Lexeme: (               Token: LEFT_PARENTHESIS
+Lexeme: Value of x:     Token: STRING_LITERAL
+Lexeme: ,               Token: COMMA
+Lexeme: x               Token: IDENTIFIER
+Lexeme: )               Token: RIGHT_PARENTHESIS
+Lexeme: show            Token: IDENTIFIER
+Lexeme: (               Token: LEFT_PARENTHESIS
+Lexeme: Value of y:     Token: STRING_LITERAL
+Lexeme: ,               Token: COMMA
+Lexeme: y               Token: IDENTIFIER
+Lexeme: )               Token: RIGHT_PARENTHESIS
+Lexeme: show            Token: IDENTIFIER
+Lexeme: (               Token: LEFT_PARENTHESIS
+Lexeme: Sum is:         Token: STRING_LITERAL
+Lexeme: ,               Token: COMMA
+Lexeme: sum             Token: IDENTIFIER
+Lexeme: )               Token: RIGHT_PARENTHESIS
+Lexeme: show            Token: IDENTIFIER
+Lexeme: (               Token: LEFT_PARENTHESIS
+Lexeme: Current letter:  Token: STRING_LITERAL
+Lexeme: ,               Token: COMMA
+Lexeme: letter          Token: IDENTIFIER
+Lexeme: )               Token: RIGHT_PARENTHESIS
+Lexeme:  Conditional   Token: LINE_COMMENT
+Lexeme: digit           Token: KEYWORD
+Lexeme: x               Token: IDENTIFIER
+Lexeme: =               Token: ASSIGN_OPERATOR
+Lexeme: 7               Token: INT_LITERAL
+Lexeme: indiv           Token: KEYWORD
+Lexeme: grade           Token: IDENTIFIER
+Lexeme: =               Token: ASSIGN_OPERATOR
+Lexeme: '               Token: CHAR_QUOTATION
+Lexeme: B               Token: IDENTIFIER
+Lexeme: '               Token: CHAR_QUOTATION
+Lexeme: check           Token: KEYWORD
+Lexeme: (               Token: LEFT_PARENTHESIS
+Lexeme: x               Token: IDENTIFIER
+Lexeme: >               Token: GREATER_THAN_OPERATOR
+Lexeme: 0               Token: INT_LITERAL
+Lexeme: )               Token: RIGHT_PARENTHESIS
+Lexeme: {               Token: LEFT_BRACE
+Lexeme: check           Token: KEYWORD
+Lexeme: (               Token: LEFT_PARENTHESIS
+Lexeme: x               Token: IDENTIFIER
+Lexeme: <               Token: LESS_THAN_OPERATOR
+Lexeme: 10              Token: INT_LITERAL
+Lexeme: )               Token: RIGHT_PARENTHESIS
+Lexeme: {               Token: LEFT_BRACE
+Lexeme: show            Token: IDENTIFIER
+Lexeme: (               Token: LEFT_PARENTHESIS
+Lexeme: x is a single-digit positive number Token: STRING_LITERAL
+Lexeme: )               Token: RIGHT_PARENTHESIS
+Lexeme: }               Token: RIGHT_BRACE
+Lexeme: instead         Token: KEYWORD
+Lexeme: {               Token: LEFT_BRACE
+Lexeme: show            Token: IDENTIFIER
+Lexeme: (               Token: LEFT_PARENTHESIS
+Lexeme: x is a two-digit or more positive number Token: STRING_LITERAL
+Lexeme: )               Token: RIGHT_PARENTHESIS
+Lexeme: }               Token: RIGHT_BRACE
+Lexeme: instead         Token: KEYWORD
+Lexeme: {               Token: LEFT_BRACE
+Lexeme: show            Token: IDENTIFIER
+Lexeme: (               Token: LEFT_PARENTHESIS
+Lexeme: x is not positive Token: STRING_LITERAL
+Lexeme: )               Token: RIGHT_PARENTHESIS
+Lexeme: }               Token: RIGHT_BRACE
+Lexeme: }               Token: RIGHT_BRACE
+Lexeme: alias           Token: RESERVED_WORD
+Lexeme: jumpto          Token: RESERVED_WORD
+Lexeme: EOF             Token: EOF
+>>>>>>> 5b3aac9d4cc669d05c582d24247b43ffb7409f70
