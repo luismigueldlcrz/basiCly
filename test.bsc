@@ -9,26 +9,7 @@ _hello2
 
 // key
 
-<<<<<<< HEAD:test.bsc
 show("The total sum is: " , sum)
-=======
-check
-indiv
-otherwise
-skip
-cycle
-instead
-perform
-stop
-digit
-large
-select
-tiny
-during
-long
-short
-when
->>>>>>> 71357cbde31b7a0029e199cbce994f014b3fde10:text.bsc
 
 //reserved
 
