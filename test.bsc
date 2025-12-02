@@ -1,45 +1,102 @@
-// Iterative
+// id
 
-digit sum 
-sum = 0
+ABCD
+abcd
+Abcd
+aBcd
+Num23
+_hello2
 
-cycle (digit i = 1: i <= 5: i++){
-	sum = sum + i
-}
+// key
 
-show("The total sum is: " , sum)
+check
+indiv
+otherwise
+skip
+cycle
+instead
+perform
+stop
+digit
+large
+select
+tiny
+during
+long
+short
+when
 
-// Assignment
-
-digit x = 10
-digit y = 5
-digit sum = x + y
-indiv letter = 'A'
-
-show("Value of x: ", x)
-show("Value of y: ", y)
-show("Sum is: ", sum)
-show("Current letter: ", letter)
-
-// Conditional
-
-digit x = 7
-indiv grade = 'B'
-
-check (x > 0){
-    check (x < 10){
-        show("x is a single-digit positive number")
-    }
-    instead{
-        show("x is a two-digit or more positive number")
-    }
-instead{
-    show("x is not positive")
-    }
-}
-
-
-
+//reserved
 
 alias
+group
+local
+size
+blank
 jumpto
+output
+true
+bothsign
+keep
+register
+whole
+false
+link
+set
+fixed
+live
+shared
+
+// constant values
+
+fixed digit x = 10
+fixed short pi = 3.14
+fixed indiv letter = 'A'
+fixed text name = "apple"
+
+//noise
+
+from
+then
+with
+
+//comment
+
+// can you read this?
+/* please read
+not sure if this all true */
+
+// arithmetic/7
+
++
+-
+*
+/
+%
+** 
+$
+
+// Boolean/9
+
+==
+!=
+
+<
+=
+
+<=
+&&
+||
+!
+
+// Delimeters and brackets
+
+( )
+{ }
+[ ]
+:
+,
+" "
+' '
+
+// invalid
