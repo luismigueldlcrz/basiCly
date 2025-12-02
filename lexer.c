@@ -610,7 +610,7 @@ static char *readFile(const char *filename) {
 }
 
 int main(int argc, char **argv) {
-    const char *input = (argc >= 2) ? argv[1] : "text.bsc";
+    const char *input = (argc >= 2) ? argv[1] : "test.bsc";
 
     /* Validate extension .bsc (basic check) */
     size_t L = strlen(input);
