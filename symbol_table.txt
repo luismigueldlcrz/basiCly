@@ -1,11 +1,11 @@
-Lexeme:  id                           Token: LINE_COMMENT
+Lexeme:  Character Set                 Token: LINE COMMENT
 Lexeme: ABCD                           Token: IDENTIFIER
 Lexeme: abcd                           Token: IDENTIFIER
 Lexeme: Abcd                           Token: IDENTIFIER
 Lexeme: aBcd                           Token: IDENTIFIER
 Lexeme: Num23                          Token: IDENTIFIER
 Lexeme: _hello2                        Token: IDENTIFIER
-Lexeme:  key                          Token: LINE_COMMENT
+Lexeme:  Keywords                      Token: LINE COMMENT
 Lexeme: check                          Token: KEYWORD
 Lexeme: indiv                          Token: KEYWORD
 Lexeme: otherwise                      Token: KEYWORD
@@ -22,59 +22,61 @@ Lexeme: during                         Token: KEYWORD
 Lexeme: long                           Token: KEYWORD
 Lexeme: short                          Token: KEYWORD
 Lexeme: when                           Token: KEYWORD
-Lexeme: reserved                      Token: LINE_COMMENT
-Lexeme: alias                          Token: RESERVEDWORD
-Lexeme: group                          Token: RESERVEDWORD
-Lexeme: local                          Token: RESERVEDWORD
-Lexeme: size                           Token: RESERVEDWORD
-Lexeme: blank                          Token: RESERVEDWORD
-Lexeme: jumpto                         Token: RESERVEDWORD
-Lexeme: output                         Token: RESERVEDWORD
-Lexeme: true                           Token: RESERVEDWORD
-Lexeme: bothsign                       Token: RESERVEDWORD
-Lexeme: keep                           Token: RESERVEDWORD
-Lexeme: register                       Token: RESERVEDWORD
-Lexeme: whole                          Token: RESERVEDWORD
-Lexeme: false                          Token: RESERVEDWORD
-Lexeme: link                           Token: RESERVEDWORD
-Lexeme: set                            Token: RESERVEDWORD
-Lexeme: fixed                          Token: RESERVEDWORD
-Lexeme: live                           Token: RESERVEDWORD
-Lexeme: shared                         Token: RESERVEDWORD
-Lexeme:  constant values              Token: LINE_COMMENT
-Lexeme: fixed                          Token: RESERVEDWORD
+Lexeme:  Reserved Words                Token: LINE COMMENT
+Lexeme: alias                          Token: RESERVED WORD
+Lexeme: group                          Token: RESERVED WORD
+Lexeme: local                          Token: RESERVED WORD
+Lexeme: size                           Token: RESERVED WORD
+Lexeme: blank                          Token: RESERVED WORD
+Lexeme: jumpto                         Token: RESERVED WORD
+Lexeme: output                         Token: RESERVED WORD
+Lexeme: true                           Token: RESERVED WORD
+Lexeme: bothsign                       Token: RESERVED WORD
+Lexeme: keep                           Token: RESERVED WORD
+Lexeme: register                       Token: RESERVED WORD
+Lexeme: whole                          Token: RESERVED WORD
+Lexeme: false                          Token: RESERVED WORD
+Lexeme: link                           Token: RESERVED WORD
+Lexeme: set                            Token: RESERVED WORD
+Lexeme: fixed                          Token: RESERVED WORD
+Lexeme: live                           Token: RESERVED WORD
+Lexeme: shared                         Token: RESERVED WORD
+Lexeme:  Noise Words                   Token: LINE COMMENT
+Lexeme: from                           Token: NOISE WORD
+Lexeme: then                           Token: NOISE WORD
+Lexeme: with                           Token: NOISE WORD
+Lexeme:  Constant Values               Token: LINE COMMENT
+Lexeme: fixed                          Token: RESERVED WORD
 Lexeme: digit                          Token: KEYWORD
 Lexeme: x                              Token: IDENTIFIER
 Lexeme: =                              Token: ASSIGN
-Lexeme: 10                             Token: INT_LITERAL
-Lexeme: fixed                          Token: RESERVEDWORD
+Lexeme: 10                             Token: INT LITERAL
+Lexeme: fixed                          Token: RESERVED WORD
 Lexeme: short                          Token: KEYWORD
 Lexeme: pi                             Token: IDENTIFIER
 Lexeme: =                              Token: ASSIGN
-Lexeme: 3.14                           Token: FLOAT_LITERAL
-Lexeme: fixed                          Token: RESERVEDWORD
+Lexeme: 3.14                           Token: FLOAT LITERAL
+Lexeme: fixed                          Token: RESERVED WORD
 Lexeme: indiv                          Token: KEYWORD
 Lexeme: letter                         Token: IDENTIFIER
 Lexeme: =                              Token: ASSIGN
-Lexeme: '                              Token: LEFT_CHAR_QUOTATION
-Lexeme: A                              Token: CHAR_LITERAL
-Lexeme: '                              Token: RIGHT_CHAR_QUOTATION
-Lexeme: fixed                          Token: RESERVEDWORD
-Lexeme: text                           Token: IDENTIFIER
+Lexeme: '                              Token: LEFT CHAR QUOTATION
+Lexeme: A                              Token: CHAR LITERAL
+Lexeme: '                              Token: RIGHT CHAR QUOTATION
+Lexeme: fixed                          Token: RESERVED WORD
+Lexeme: indiv                          Token: KEYWORD
 Lexeme: name                           Token: IDENTIFIER
+Lexeme: [                              Token: LEFT BRACKET
+Lexeme: 10                             Token: INT LITERAL
+Lexeme: ]                              Token: RIGHT BRACKET
 Lexeme: =                              Token: ASSIGN
-Lexeme: "                              Token: LEFT_STRING_QUOTATION
-Lexeme: apple                          Token: STRING_LITERAL
-Lexeme: "                              Token: RIGHT_STRING_QUOTATION
-Lexeme: noise                         Token: LINE_COMMENT
-Lexeme: from                           Token: NOISEWORD
-Lexeme: then                           Token: NOISEWORD
-Lexeme: with                           Token: NOISEWORD
-Lexeme: comment                       Token: LINE_COMMENT
-Lexeme:  can you read this?           Token: LINE_COMMENT
-Lexeme:  please read
-not sure if this all true  Token: BLOCK_COMMENT
-Lexeme:  arithmetic/7                 Token: LINE_COMMENT
+Lexeme: "                              Token: LEFT STRING QUOTATION
+Lexeme: apple                          Token: STRING LITERAL
+Lexeme: "                              Token: RIGHT STRING QUOTATION
+Lexeme:  Comments                      Token: LINE COMMENT
+Lexeme:  This is a single-line comment  Token: LINE COMMENT
+Lexeme:  This is a  multi-line  comment  Token: BLOCK CCOMMENT
+Lexeme:  Arithmetic Operators          Token: LINE COMMENT
 Lexeme: +                              Token: PLUS
 Lexeme: -                              Token: MINUS
 Lexeme: *                              Token: MULTIPLY
@@ -82,29 +84,28 @@ Lexeme: /                              Token: DIVIDE
 Lexeme: %                              Token: MODULO
 Lexeme: **                             Token: EXPONENT
 Lexeme: $                              Token: DIV
-Lexeme:  Boolean/9                    Token: LINE_COMMENT
+Lexeme:  Boolean Operators             Token: LINE COMMENT
 Lexeme: ==                             Token: EQUAL
 Lexeme: !=                             Token: NOT_EQUAL
 Lexeme: <                              Token: LESS
 Lexeme: =                              Token: ASSIGN
-Lexeme: <=                             Token: LESS_EQUAL
+Lexeme: <=                             Token: LESS THAN EQUAL
 Lexeme: &&                             Token: AND
 Lexeme: ||                             Token: OR
 Lexeme: !                              Token: NOT
-Lexeme:  Delimeters and brackets      Token: LINE_COMMENT
-Lexeme: (                              Token: LEFT_PAREN
-Lexeme: )                              Token: RIGHT_PAREN
-Lexeme: {                              Token: LEFT_BRACE
-Lexeme: }                              Token: RIGHT_BRACE
-Lexeme: [                              Token: LEFT_BRACKET
-Lexeme: ]                              Token: RIGHT_BRACKET
+Lexeme:  Delimiters and Brackets       Token: LINE COMMENT
+Lexeme: (                              Token: LEFT PARENTHESIS
+Lexeme: )                              Token: RIGHT PARENTHESIS
+Lexeme: {                              Token: LEFT BRACE
+Lexeme: }                              Token: RIGHT BRACE
+Lexeme: [                              Token: LEFT BRACKET
+Lexeme: ]                              Token: RIGHT BRACKET
 Lexeme: :                              Token: COLON
 Lexeme: ,                              Token: COMMA
-Lexeme: "                              Token: LEFT_STRING_QUOTATION
-Lexeme:                                Token: STRING_LITERAL
-Lexeme: "                              Token: RIGHT_STRING_QUOTATION
-Lexeme: '                              Token: LEFT_CHAR_QUOTATION
-Lexeme:                                Token: CHAR_LITERAL
-Lexeme: '                              Token: RIGHT_CHAR_QUOTATION
-Lexeme:  invalid                       Token: LINE_COMMENT
+Lexeme: "                              Token: LEFT STRING QUOTATION
+Lexeme:                                Token: STRING LITERAL
+Lexeme: "                              Token: RIGHT STRING QUOTATION
+Lexeme: '                              Token: LEFT CHAR QUOTATION
+Lexeme:                                Token: CHAR LITERAL
+Lexeme: '                              Token: RIGHT CHAR QUOTATION
 Lexeme: EOF                            Token: EOF

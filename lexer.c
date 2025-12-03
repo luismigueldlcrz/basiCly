@@ -540,24 +540,24 @@ const char *tokenTypeName(TokenType t) {
         case TOKEN_UNKNOWN: return "UNKNOWN";
         case TOKEN_IDENTIFIER: return "IDENTIFIER";
         case TOKEN_KEYWORD: return "KEYWORD";
-        case TOKEN_RESERVEDWORD: return "RESERVEDWORD";
-        case TOKEN_NOISEWORD: return "NOISEWORD";
-        case TOKEN_INT_LITERAL: return "INT_LITERAL";
-        case TOKEN_FLOAT_LITERAL: return "FLOAT_LITERAL";
-        case TOKEN_STRING_LITERAL: return "STRING_LITERAL";
-        case TOKEN_CHAR_LITERAL: return "CHAR_LITERAL";
-        case TOKEN_LINE_COMMENT: return "LINE_COMMENT";
-        case TOKEN_BLOCK_COMMENT: return "BLOCK_COMMENT";
-        case TOKEN_LEFT_PARENTHESIS: return "LEFT_PAREN";
-        case TOKEN_RIGHT_PARENTHESIS: return "RIGHT_PAREN";
-        case TOKEN_LEFT_BRACE: return "LEFT_BRACE";
-        case TOKEN_RIGHT_BRACE: return "RIGHT_BRACE";
-        case TOKEN_LEFT_BRACKET: return "LEFT_BRACKET";
-        case TOKEN_RIGHT_BRACKET: return "RIGHT_BRACKET";
-        case TOKEN_LEFT_STRING_QUOTATION: return "LEFT_STRING_QUOTATION";
-        case TOKEN_RIGHT_STRING_QUOTATION: return "RIGHT_STRING_QUOTATION";
-        case TOKEN_LEFT_CHAR_QUOTATION: return "LEFT_CHAR_QUOTATION";
-        case TOKEN_RIGHT_CHAR_QUOTATION: return "RIGHT_CHAR_QUOTATION";
+        case TOKEN_RESERVEDWORD: return "RESERVED WORD";
+        case TOKEN_NOISEWORD: return "NOISE WORD";
+        case TOKEN_INT_LITERAL: return "INT LITERAL";
+        case TOKEN_FLOAT_LITERAL: return "FLOAT LITERAL";
+        case TOKEN_STRING_LITERAL: return "STRING LITERAL";
+        case TOKEN_CHAR_LITERAL: return "CHAR LITERAL";
+        case TOKEN_LINE_COMMENT: return "LINE COMMENT";
+        case TOKEN_BLOCK_COMMENT: return "BLOCK CCOMMENT";
+        case TOKEN_LEFT_PARENTHESIS: return "LEFT PARENTHESIS";
+        case TOKEN_RIGHT_PARENTHESIS: return "RIGHT PARENTHESIS";
+        case TOKEN_LEFT_BRACE: return "LEFT BRACE";
+        case TOKEN_RIGHT_BRACE: return "RIGHT BRACE";
+        case TOKEN_LEFT_BRACKET: return "LEFT BRACKET";
+        case TOKEN_RIGHT_BRACKET: return "RIGHT BRACKET";
+        case TOKEN_LEFT_STRING_QUOTATION: return "LEFT STRING QUOTATION";
+        case TOKEN_RIGHT_STRING_QUOTATION: return "RIGHT STRING QUOTATION";
+        case TOKEN_LEFT_CHAR_QUOTATION: return "LEFT CHAR QUOTATION";
+        case TOKEN_RIGHT_CHAR_QUOTATION: return "RIGHT CHAR QUOTATION";
         case TOKEN_COMMA: return "COMMA";
         case TOKEN_SEMICOLON: return "SEMICOLON";
         case TOKEN_COLON: return "COLON";
@@ -572,21 +572,21 @@ const char *tokenTypeName(TokenType t) {
         case TOKEN_ASSIGN_OPERATOR: return "ASSIGN";
         case TOKEN_EQUAL_OPERATOR: return "EQUAL";
         case TOKEN_LOGICAL_NOT_OPERATOR: return "NOT";
-        case TOKEN_NOT_EQUAL_OPERATOR: return "NOT_EQUAL";
+        case TOKEN_NOT_EQUAL_OPERATOR: return "NOT EQUAL";
         case TOKEN_LESS_THAN_OPERATOR: return "LESS";
         case TOKEN_GREATER_THAN_OPERATOR: return "GREATER";
-        case TOKEN_LESS_EQUAL_OPERATOR: return "LESS_EQUAL";
-        case TOKEN_GREATER_EQUAL_OPERATOR: return "GREATER_EQUAL";
+        case TOKEN_LESS_EQUAL_OPERATOR: return "LESS THAN EQUAL";
+        case TOKEN_GREATER_EQUAL_OPERATOR: return "GREATER THAN EQUAL";
         case TOKEN_INCREMENT_OPERATOR: return "INCREMENT";
         case TOKEN_DECREMENT_OPERATOR: return "DECREMENT";
-        case TOKEN_PLUS_ASSIGN_OPERATOR: return "PLUS_ASSIGN";
-        case TOKEN_MINUS_ASSIGN_OPERATOR: return "MINUS_ASSIGN";
-        case TOKEN_MULTIPLY_ASSIGN_OPERATOR: return "MULT_ASSIGN";
-        case TOKEN_DIVIDE_ASSIGN_OPERATOR: return "DIV_ASSIGN";
-        case TOKEN_MODULO_ASSIGN_OPERATOR: return "MOD_ASSIGN";
+        case TOKEN_PLUS_ASSIGN_OPERATOR: return "PLUS ASSIGN";
+        case TOKEN_MINUS_ASSIGN_OPERATOR: return "MINUS ASSIGN";
+        case TOKEN_MULTIPLY_ASSIGN_OPERATOR: return "MULTIPLY ASSIGN";
+        case TOKEN_DIVIDE_ASSIGN_OPERATOR: return "DIVIDE ASSIGN";
+        case TOKEN_MODULO_ASSIGN_OPERATOR: return "MODULO ASSIGN";
         case TOKEN_LOGICAL_AND_OPERATOR: return "AND";
         case TOKEN_LOGICAL_OR_OPERATOR: return "OR";
-        default: return "UNKNOWN_TYPE";
+        default: return "UNKNOWN TYPE";
     }
 }
 
@@ -607,6 +607,14 @@ static char *readFile(const char *filename) {
     buf[n] = '\0';
     fclose(f);
     return buf;
+}
+
+/* simple helper: replace newlines/CR/tabs inside lexemes with spaces so printing stays on one line */
+void sanitizeLexeme(char *lexeme) {
+    if (!lexeme) return;
+    for (char *p = lexeme; *p; ++p) {
+        if (*p == '\n' || *p == '\r' || *p == '\t') *p = ' ';
+    }
 }
 
 int main(int argc, char **argv) {
@@ -634,6 +642,8 @@ int main(int argc, char **argv) {
     Token tok;
     do {
         tok = getNextToken(&lexer);
+        /* sanitize token lexeme so internal newlines won't push "Token:" to a new line */
+        if (tok.lexeme) sanitizeLexeme(tok.lexeme);
         const char *tname = tokenTypeName(tok.type);
         const char *lex = tok.lexeme ? tok.lexeme : "";
         printf("Lexeme: %-30s Token: %s\n", lex, tname);

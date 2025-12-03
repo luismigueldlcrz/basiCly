@@ -1,4 +1,4 @@
-// id
+// Character Set
 
 ABCD
 abcd
@@ -7,7 +7,7 @@ aBcd
 Num23
 _hello2
 
-// key
+// Keywords
 
 check
 indiv
@@ -26,7 +26,7 @@ long
 short
 when
 
-//reserved
+// Reserved Words
 
 alias
 group
@@ -47,26 +47,26 @@ fixed
 live
 shared
 
-// constant values
-
-fixed digit x = 10
-fixed short pi = 3.14
-fixed indiv letter = 'A'
-fixed text name = "apple"
-
-//noise
+// Noise Words
 
 from
 then
 with
 
-//comment
+// Constant Values
 
-// can you read this?
-/* please read
-not sure if this all true */
+fixed digit x = 10
+fixed short pi = 3.14
+fixed indiv letter = 'A'
+fixed indiv name[10] = "apple"
 
-// arithmetic/7
+// Comments
+// This is a single-line comment
+/* This is a
+multi-line
+comment */
+
+// Arithmetic Operators
 
 +
 -
@@ -76,20 +76,18 @@ not sure if this all true */
 ** 
 $
 
-// Boolean/9
+// Boolean Operators
 
 ==
 !=
-
 <
 =
-
 <=
 &&
 ||
 !
 
-// Delimeters and brackets
+// Delimiters and Brackets
 
 ( )
 { }
@@ -98,5 +96,3 @@ $
 ,
 " "
 ' '
-
-// invalid
